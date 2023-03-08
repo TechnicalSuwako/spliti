@@ -63,9 +63,6 @@
     curl_close($ch);
 
     if ($body && $httpCode == 200) {
-      $res["status"] = $httpCode;
-      if ($url == "") $res["page"] = "front";
-      else $res["page"] = "news";
       $res["title"] = gettitle($body);
       $res["content"] = rmbloat($body);
       $res["img"] = getimg($body);
@@ -79,10 +76,10 @@
   $gurl = str_replace("/?url=", "", htmlspecialchars($_SERVER["REQUEST_URI"]));
 
   // デフォルト＝エラー
-  $out = ["status" => 404, "page" => "notfound", "title" => "見つけられない", "content" => '<div class="newsArticle"><div class="articleHeading02"><div class="headingArea"><h1>見つけられなかった</h1></div></div><div class="contents clearfix"><div class="article decoratable"><p>ごめんね！</p></div></div>', "img" => ""];
+  $out = ["title" => "見つけられない", "content" => '<div class="newsArticle"><div class="articleHeading02"><div class="headingArea"><h1>見つけられなかった</h1></div></div><div class="contents clearfix"><div class="article decoratable"><p>ごめんね！</p></div></div>'];
 
   // $gurlは「/」だったら、トップページを表示する。記事だったら、記事を表示する。
-  if ($gurl == "/") $out = ["status" => 200, "page" => "front", "title" => "トップページ", "content" => '<div class="newsArticle"><div class="articleHeading02"><div class="headingArea"><h1>使い方</h1></div></div><div class="contents clearfix"><div class="article decoratable"><p><code>https://news.mixi.jp/view_news.pl?id=********&media_id=***</code>→<code>'.DOMAIN.'/?url=view_news.pl?id=********&media_id=***</code><br />例えば：<code>https://news.mixi.jp/view_news.pl?id=7327623&media_id=4</code>→<code>'.DOMAIN.'/?url=view_news.pl?id=7327047&media_id=262</code></p></div></div>', "img" => ""];
+  if ($gurl == "/") $out = ["title" => "トップページ", "content" => '<div class="newsArticle"><div class="articleHeading02"><div class="headingArea"><h1>使い方</h1></div></div><div class="contents clearfix"><div class="article decoratable"><p><code>https://news.mixi.jp/view_news.pl?id=********&media_id=***</code>→<code>'.DOMAIN.'/?url=view_news.pl?id=********&media_id=***</code><br />例えば：<code>https://news.mixi.jp/view_news.pl?id=7327623&media_id=4</code>→<code>'.DOMAIN.'/?url=view_news.pl?id=7327047&media_id=262</code></p></div></div>'];
   else if (isarticle($gurl)) $out = get($gurl);
 ?>
 <!DOCTYPE html>
@@ -90,11 +87,13 @@
   <head>
     <meta content="text/html; charset=euc-jp" http-equiv="content-type" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta property="og:title" content="<?= $out["title"] ?>" />
+    <?php if (isset($out["desc"])) { ?>
+    <meta property="og:title" content="spliti 〜 <?= $out["title"] ?>" />
     <meta property="og:type" content="article" />
-    <meta property="og:description" content="<?= $out["title"] ?>" />
+    <meta property="og:description" content="<?= $out["desc"] ?>" />
     <meta property="og:url" content="<?= $gurl ?>" />
-    <meta name="thumbnail" content="<?= $out["img"] ?>" />
+    <?php } ?>
+    <?php if (isset($out["img"])) { ?><meta name="thumbnail" content="<?= $out["img"] ?>" /><?php } ?>
     <title>spliti 〜 <?= $out["title"] ?></title>
     <link rel="stylesheet" type="text/css" href="/style.css" />
   </head>
