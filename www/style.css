@@ -57,3 +57,8 @@ code {
   text-align: center;
   font-size: 86%;
 }
+
+.footer {
+  text-align: center;
+  margin-top: 32px;
+}
