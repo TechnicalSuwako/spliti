@@ -11,7 +11,7 @@ $domain="example.com"
 cd /var/www/htdocs
 git clone https://gitler.moe/TechnicalSuwako/spliti.git && cd spliti
 mv config.example.php config.php
-find . -type f -name "/etc/nginx/sites-enabled/spliti.conf" -exec sed -i 's/spliti.076.moe/$domain/g'
+find . -type f -name "config.php" -exec sed -i 's/mixi.owacon.moe/$domain/g'
 ```
 
 ### Linux

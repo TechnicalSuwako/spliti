@@ -1,3 +1,3 @@
 <?php
-  define("DOMAIN", "https://spliti.076.moe");
+  define("DOMAIN", "https://mixi.owacon.moe");
 ?>
