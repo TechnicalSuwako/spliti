@@ -100,8 +100,8 @@
   <body>
     <?= $out["content"] ?>
     <p class="footer">
-      <a href="https://gitler.moe/TechnicalSuwako/spliti"><img src="/git.png" alt="Git"></a> |
-      <a href="https://076.moe">匿名自営業０７６</a>
+      <a href="https://gitler.moe/suwako/spliti"><img src="/git.png" alt="Git"></a> |
+      <a href="https://076.moe">０７６</a>
     </p>
   </body>
 </html>
