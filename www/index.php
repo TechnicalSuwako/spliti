@@ -19,14 +19,57 @@
     return strip_tags($res);
   }
 
+  /* カテゴリーかの確認 */
+  function iscategory (string $url): bool {
+    $chk = explode("=", $url);
+    if (isset($chk[0])) $chk = explode("?", $chk[0]);
+    return isset($chk[0]) && $chk[0] == "list_news_category.pl";
+  }
+
   /* 記事かの確認 */
   function isarticle (string $url): bool {
     $chk = explode("=", $url);
-    if (isset($chk[0]) && $chk[0] == "view_news.pl?id" && isset($chk[1]) && isset($chk[2])) {
-      $chk2 = explode("&amp;", $chk[1]);
-      if (isset($chk2[1]) && $chk2[1] == "media_id") return true;
-    }
-    return false;
+    return isset($chk[0]) && $chk[0] == "view_news.pl?id" && isset($chk[1]) && isset($chk[2]);
+  }
+
+  /* カテゴリーだけが残るまで消す */
+  function rmcbloat (string $body): string {
+    //$res = preg_replace('/<!DOCTYPE html>(.*?)<div id="subCategoryNavi" class="LEGACY_UI2016_subCategoryNavi">/s', "", $body);
+    $res = preg_replace('/<!DOCTYPE html>(.*?)<!--注目のニュース-->/s', "", $body);
+    $res = preg_replace('/<!--\/newsCategoryList-->(.*?)<\/html>/s', "", $res);
+    $res = preg_replace('/<div class="COMMONDOC_header2017_mainNavHeader(.*?)<\/div>/s', "", $res);
+    $res = preg_replace('/<div class="COMMONDOC_header2017_mainNav(.*?)<\/div>/s', "", $res);
+    $res = preg_replace('/<div class="COMMONDOC_header2017_toggleNav(.*?)<\/div>/s', "", $res);
+    $res = preg_replace('/<div class="COMMONDOC_header2017_localNavArea(.*?)<\/div>/s', "", $res);
+    $res = preg_replace('/<div class="COMMONDOC_header2017_globalNav__account(.*?)<\/div>/s', "", $res);
+    $res = preg_replace('/<div class="COMMONDOC_header2017_globalNav__logo(.*?)<\/div>/s', "", $res);
+    $res = preg_replace('/<div class="COMMONDOC_header2017_globalNav__toggleNav(.*?)<\/div>/s', "", $res);
+    $res = preg_replace('/<div class="COMMONDOC_header2017_adBanner(.*?)<\/div>/s', "", $res);
+    $res = preg_replace('/<div class="COMMONDOC_header2017_globalNav(.*?)<\/div>/s', "", $res);
+    $res = preg_replace('/<div class="COMMONDOC_header2017_globalNavArea(.*?)<\/div>/s', "", $res);
+    $res = preg_replace('/<div class="COMMONDOC_header2017_headerArea(.*?)<\/div>/s', "", $res);
+    $res = preg_replace('/<div id="page" class="FRAME2016_page">(.*?)<\/div>/s', "", $res);
+    $res = preg_replace('/<div id="subCategoryNavi(.*?)<\/div>/s', "", $res);
+    $res = preg_replace('/<div role="navigation"(.*?)<\/div>/s', "", $res);
+    $res = preg_replace('/<div id="div-gpt-ad-(.*?)<\/div>/s', "", $res);
+    $res = preg_replace('/<h3(.*?)<\/h3>/s', "", $res);
+    $res = preg_replace('/<script(.*?)<\/script>/s', "", $res);
+    $res = preg_replace('/<ul class="entryList0(.*?)<\/ul>/s', "", $res);
+    $res = preg_replace('/<div class="adMain(.*?)<\/div>/s', "", $res);
+    $res = preg_replace('/<div class="gAdComponent(.*?)<\/div>/s', "", $res);
+    $res = preg_replace('/<div class="adsense0(.*?)<\/div>/s', "", $res);
+    $res = preg_replace('/<div class="adsense(.*?)<\/div>/s', "", $res);
+    $res = preg_replace('/<div class="pageList02(.*?)<\/div>/s', "", $res);
+    $res = preg_replace('/<span class="reactionCountBalloon(.*?)<\/span>/s', "", $res);
+    $res = str_replace("https://news-image.mixi.net", IMGPROXY."/news-image.mixi.net", $res);
+    $res = str_replace("https://img.mixi.net", IMGPROXY."/img.mixi.net", $res);
+    $res = str_replace("https://news.mixi.jp/", DOMAIN."/?url=", $res);
+    $res = str_replace("・ ", "", $res);
+    $res = str_replace("[", "", $res);
+    $res = str_replace("]", "", $res);
+    //$res = preg_replace("/sort=(.*?)&page=(.*?)&id=(.*?)/", "id=$0&page=$1&sort=$2", $res);
+    $res = trim("<div id=\"subCategoryNavi\" class=\"LEGACY_UI2016_subCategoryNavi\">\n".trim($res))."\n</div>\n";
+    return "<a href=\"/\">トップへ</a><div class=\"newsArticle\">".$res."</div>";
   }
 
   /* 記事だけが残るまで消す */
@@ -45,7 +88,12 @@
     $res = preg_replace("/<!--(.*)-->/", "", $res);
     $res = str_replace("<!--", "", $res);
     $res = str_replace("https://news-image.mixi.net", IMGPROXY."/news-image.mixi.net", $res);
-    return trim("<div class=\"newsArticle\">\n".trim($res))."\n    </div>\n";
+    $res = trim("<div class=\"newsArticle\">\n".trim($res))."\n    </div>\n";
+    return "<a href=\"/\">トップへ</a>".$res;
+  }
+
+  function getfront (): string {
+    return '<div class="newsArticle"><div class="newsCategoryList"><div class="heading08"><h1>ニュースカテゴリ一覧</h1></div><ul class="newsCategoryList"><li class="newCategoryList"><a href="'.DOMAIN.'/?url=list_news_category.pl?id=7">エンタメ</a></li><li class="newCategoryList"><a href="'.DOMAIN.'/?url=list_news_category.pl?id=3">トレンド</a></li><li class="newCategoryList"><a href="'.DOMAIN.'/?url=list_news_category.pl?id=1">社会</a></li><li class="newCategoryList"><a href="'.DOMAIN.'/?url=list_news_category.pl?id=4">地域</a></li><li class="newCategoryList"><a href="'.DOMAIN.'/?url=list_news_category.pl?id=9">ゲーム・アニメ</a></li><li class="newCategoryList"><a href="'.DOMAIN.'/?url=list_news_category.pl?id=8">IT・インターネット</a></li><li class="newCategoryList"><a href="'.DOMAIN.'/?url=list_news_category.pl?id=6">スポーツ</a></li><li class="newCategoryList"><a href="'.DOMAIN.'/?url=list_news_category.pl?id=5">海外</a></li><li class="newCategoryList"><a href="'.DOMAIN.'/?url=list_news_category.pl?id=10">コラム</a></li><li class="newCategoryList"><a href="'.DOMAIN.'/?url=list_news_category.pl?id=2">ライフスタイル</a></li></ul></div></div>';
   }
 
   /* 記事の受取 */
@@ -67,8 +115,8 @@
 
     if ($body && $httpCode == 200) {
       $res["title"] = gettitle($body);
-      $res["content"] = rmbloat($body);
-      $res["img"] = getimg($body);
+      $res["content"] = isarticle($url) ? rmbloat($body) : rmcbloat($body);
+      if (isarticle($url)) $res["img"] = getimg($body);
       $res["desc"] = getdesc($res["content"]);
     }
 
@@ -82,8 +130,9 @@
   $out = ["title" => "見つけられない", "content" => '<div class="newsArticle"><div class="articleHeading02"><div class="headingArea"><h1>見つけられなかった</h1></div></div><div class="contents clearfix"><div class="article decoratable"><p>ごめんね！</p></div></div>'];
 
   // $gurlは「/」だったら、トップページを表示する。記事だったら、記事を表示する。
-  if ($gurl == "/") $out = ["title" => "トップページ", "content" => '<div class="newsArticle"><div class="articleHeading02"><div class="headingArea"><h1>使い方</h1></div></div><div class="contents clearfix"><div class="article decoratable"><p><code>https://news.mixi.jp/view_news.pl?id=********&media_id=***</code>→<code>'.DOMAIN.'/?url=view_news.pl?id=********&media_id=***</code><br />例えば：<code>https://news.mixi.jp/view_news.pl?id=7327623&media_id=4</code>→<code>'.DOMAIN.'/?url=view_news.pl?id=7327047&media_id=262</code></p></div></div>'];
+  if ($gurl == "/") $out = ["title" => "トップページ", "content" => getfront()];
   else if (isarticle($gurl)) $out = get($gurl);
+  else if (iscategory($gurl)) $out = get($gurl);
 ?>
 <!DOCTYPE html>
 <html lang="ja">
@@ -103,6 +152,7 @@
   <body>
     <?= $out["content"] ?>
     <p class="footer">
+      Spliti 1.1.0 |
       <a href="https://gitler.moe/suwako/spliti"><img src="/git.png" alt="Git"></a> |
       <a href="https://076.moe/">０７６</a>
     </p>
