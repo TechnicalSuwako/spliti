@@ -34,7 +34,6 @@
 
   /* カテゴリーだけが残るまで消す */
   function rmcbloat (string $body): string {
-    //$res = preg_replace('/<!DOCTYPE html>(.*?)<div id="subCategoryNavi" class="LEGACY_UI2016_subCategoryNavi">/s', "", $body);
     $res = preg_replace('/<!DOCTYPE html>(.*?)<!--注目のニュース-->/s', "", $body);
     $res = preg_replace('/<!--\/newsCategoryList-->(.*?)<\/html>/s', "", $res);
     $res = preg_replace('/<div class="COMMONDOC_header2017_mainNavHeader(.*?)<\/div>/s', "", $res);
@@ -67,7 +66,6 @@
     $res = str_replace("・ ", "", $res);
     $res = str_replace("[", "", $res);
     $res = str_replace("]", "", $res);
-    //$res = preg_replace("/sort=(.*?)&page=(.*?)&id=(.*?)/", "id=$0&page=$1&sort=$2", $res);
     $res = trim("<div id=\"subCategoryNavi\" class=\"LEGACY_UI2016_subCategoryNavi\">\n".trim($res))."\n</div>\n";
     return "<a href=\"/\">トップへ</a><div class=\"newsArticle\">".$res."</div>";
   }
