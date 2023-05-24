@@ -9,7 +9,9 @@
 
   function getimg (string $str): string {
     preg_match('/<img class="NEWS_tempPhoto__picture" src="(.*)" alt="">/', $str, $matches);
-    return $matches[1];
+    $res = str_replace("https://", "https://imgproxy.owacon.moe/", $matches[1]);
+    unset($matches);
+    return $res;
   }
 
   function getdesc (string $str): string {
@@ -42,6 +44,7 @@
     $res = str_replace("<!--/article_image-->", "", $res);
     $res = preg_replace("/<!--(.*)-->/", "", $res);
     $res = str_replace("<!--", "", $res);
+    $res = str_replace("news-image.mixi.net", "imgproxy.owacon.moe/news-image.mixi.net", $res);
     return trim("<div class=\"newsArticle\">\n".trim($res))."\n    </div>\n";
   }
 
@@ -101,7 +104,7 @@
     <?= $out["content"] ?>
     <p class="footer">
       <a href="https://gitler.moe/suwako/spliti"><img src="/git.png" alt="Git"></a> |
-      <a href="https://076.moe">０７６</a>
+      <a href="https://076.moe/">０７６</a>
     </p>
   </body>
 </html>
