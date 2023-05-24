@@ -9,7 +9,7 @@
 
   function getimg (string $str): string {
     preg_match('/<img class="NEWS_tempPhoto__picture" src="(.*)" alt="">/', $str, $matches);
-    $res = str_replace("https://", "https://imgproxy.owacon.moe/", $matches[1]);
+    $res = str_replace("https://", IMGPROXY."/", $matches[1]);
     unset($matches);
     return $res;
   }
@@ -44,7 +44,7 @@
     $res = str_replace("<!--/article_image-->", "", $res);
     $res = preg_replace("/<!--(.*)-->/", "", $res);
     $res = str_replace("<!--", "", $res);
-    $res = str_replace("news-image.mixi.net", "imgproxy.owacon.moe/news-image.mixi.net", $res);
+    $res = str_replace("https://news-image.mixi.net", IMGPROXY."/news-image.mixi.net", $res);
     return trim("<div class=\"newsArticle\">\n".trim($res))."\n    </div>\n";
   }
 
