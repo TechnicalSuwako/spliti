@@ -9,6 +9,7 @@
 
   function getimg (string $str): string {
     preg_match('/<img class="NEWS_tempPhoto__picture" src="(.*)" alt="">/', $str, $matches);
+    if (!isset($matches[1])) return "";
     $res = str_replace("https://", IMGPROXY."/", $matches[1]);
     unset($matches);
     return $res;
@@ -79,6 +80,7 @@
     $res = preg_replace('/<table>(.*?)<\/table>/s', "", $res);
     $res = preg_replace('/<div class="adsense0(.*?)<\/div>/s', "", $res);
     $res = preg_replace('/<div class="adsense(.*?)<\/div>/s', "", $res);
+    $res = preg_replace('/(www.?)youtube.com/s', "youtube.owacon.moe", $res);
     $res = preg_replace('/<div class="subInfo">(.*?)<\/div>/s', "", $res);
     $res = preg_replace("/(^[\r\n]*|[\r\n]+)[\s\t]*[\r\n]+/", "\n", $res);
     $res = str_replace("<!--article_image-->", "", $res);
