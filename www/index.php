@@ -4,7 +4,7 @@
   /* ページのタイトル */
   function gettitle (string $str): string {
     preg_match("/<title>(.*)<\/title>/", $str, $matches);
-    return $matches[1];
+    return isset($matches[1]) ? $matches[1] : "";
   }
 
   function getimg (string $str): string {
@@ -152,7 +152,7 @@
   <body>
     <?= $out["content"] ?>
     <p class="footer">
-      Spliti 1.1.0 |
+      Spliti 1.1.1 |
       <a href="https://gitler.moe/suwako/spliti"><img src="/git.png" alt="Git"></a> |
       <a href="https://076.moe/">０７６</a>
     </p>
