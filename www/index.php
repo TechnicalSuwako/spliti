@@ -87,6 +87,7 @@
     $res = str_replace("<!--/article_image-->", "", $res);
     $res = preg_replace("/<!--(.*)-->/", "", $res);
     $res = str_replace("<!--", "", $res);
+    $res = preg_replace('/<img src="https:\/\/(.*?)"/s', '<img src="'.IMGPROXY.'/$1"', $res);
     $res = str_replace("https://news-image.mixi.net", IMGPROXY."/news-image.mixi.net", $res);
     $res = trim("<div class=\"newsArticle\">\n".trim($res))."\n    </div>\n";
     return "<a href=\"/\">トップへ</a>".$res;
@@ -152,7 +153,7 @@
   <body>
     <?= $out["content"] ?>
     <p class="footer">
-      Spliti 1.1.1 |
+      Spliti 1.1.2 |
       <a href="https://gitler.moe/suwako/spliti"><img src="/git.png" alt="Git"></a> |
       <a href="https://076.moe/">０７６</a>
     </p>

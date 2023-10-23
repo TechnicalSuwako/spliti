@@ -39,6 +39,11 @@ code {
   line-height: 2.5;
 }
 
+.article > img {
+  max-width: 100%;
+  width: auto;
+}
+
 .newsArticle {
   width: calc(100% - 20px);
   max-width: 1200px;
