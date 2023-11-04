@@ -1,0 +1,16 @@
+{{define "header"}}<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    {{if ne .Dec "" }}<meta property="og:title" content="spliti 〜 {{ .Tit }}" />
+    <meta property="og:type" content="article" />
+    <meta property="og:description" content="{{ .Dec }}" />
+    <meta property="og:url" content="{{ .Url }}" />{{end}}
+    <meta name="thumbnail" content="{{ .Img }}" />
+    <title>spliti 〜 {{ .Tit }}</title>
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico" />
+    <link rel="stylesheet" type="text/css" href="/static/style.css" />
+  </head>
+  <body>
+{{end}}

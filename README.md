@@ -10,32 +10,44 @@ mixi向けプライバシーUI。
 $domain="example.com"
 cd /var/www/htdocs
 git clone https://gitler.moe/suwako/spliti.git && cd spliti
-mv config.example.php config.php
-find . -type f -name "config.php" -exec sed -i 's/mixi.owacon.moe/$domain/g'
+find . -type f -name "config.json" -exec sed -i 's/mixi.owacon.moe/$domain/g'
 ```
 
 ### Linux
 
 ```sh
-cp srv/nginx.conf /etc/nginx/sites-enabled/spliti.conf
-find . -type f -name "/etc/nginx/sites-enabled/spliti.conf" -exec sed -i 's/ドメイン名/$domain/g'
+make
+doas make install PREFIX=/usr
+doas make config
+cp /etc/nginx/sites-enabled
+wget https://076.moe/repo/webserver/nginx/spliti.conf
+find . -type f -name "/etc/nginx/sites-enabled/spliti.conf" -exec sed -i 's/DOMAIN/$domain/g'
 /etc/init.d/nginx restart
 ```
 
 ### FreeBSD
 
 ```sh
+make
+doas make install
+doas make config CNFPREFIX=/usr/local/etc
 cp srv/nginx.conf /usr/local/etc/nginx/sites-enabled/spliti.conf
-find . -type f -name "/usr/local/etc/nginx/sites-enabled/spliti.conf" -exec sed -i 's/ドメイン名/$domain/g'
+wget https://076.moe/repo/webserver/nginx/spliti.conf
+find . -type f -name "/usr/local/etc/nginx/sites-enabled/spliti.conf" -exec sed -i 's/DOMAIN/$domain/g'
 service nginx restart
 ```
 
 ### OpenBSD
 
 ```sh
-cat /etc/httpd.conf srv/httpd.conf > /etc/httpd.conf
-find . -type f -name "/etc/httpd.conf" -exec sed -i 's/ドメイン名/$domain/g'
-rcctl restart httpd
+make
+doas make install
+doas make config
+cd /etc
+wget https://076.moe/repo/webserver/relayd/spliti.conf
+mv spliti.conf relayd.conf
+find . -type f -name "/etc/relayd.conf" -exec sed -i 's/DOMAIN/$domain/g'
+rcctl restart relayd
 ```
 
 ## インスタンス一覧
