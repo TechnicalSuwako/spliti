@@ -10,7 +10,7 @@ mixi向けプライバシーUI。
 $domain="example.com"
 cd /var/www/htdocs
 git clone https://gitler.moe/suwako/spliti.git && cd spliti
-find . -type f -name "config.json" -exec sed -i 's/mixi.owacon.moe/$domain/g'
+find . -type f -name "config.json" -exec sed -i 's/mixi.076.moe/$domain/g'
 ```
 
 ### Linux
@@ -56,7 +56,7 @@ rcctl restart relayd
 
 | ウエブサイト | [クラフレ](http://jezf25zgvxlsvuzdzm6fg2hoetmruhy4uxnolyw46tuh4jugcwc7byqd.onion/Cloudflare%E3%82%92%E4%BD%BF%E3%82%8F%E3%81%AA%E3%81%84%E7%90%86%E7%94%B1%EF%BC%88%E3%83%AA%E3%83%81%E3%83%A3%E3%83%BC%E3%83%89%E3%83%BB%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB%E3%83%9E%E3%83%B3%EF%BC%89) | 注 |
 | -- | -- | -- |
-| [https://mixi.owacon.moe/](https://mixi.owacon.moe/) | 無 | 公式インスタンス |
+| [https://mixi.076.moe/](https://mixi.076.moe/) | 無 | 公式インスタンス |
 
 ### Tor
 
