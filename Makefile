@@ -1,4 +1,4 @@
-NAME=spliti
+NAME := $(shell cat main.go | grep "var sofname" | awk '{print $$4}' | sed "s/\"//g")
 VERSION := $(shell cat main.go | grep "var version" | awk '{print $$4}' | sed "s/\"//g")
 # Linux、Haiku、Illumos = /usr、FreeBSDとOpenBSD = /usr/local、NetBSD = /usr/pkg
 PREFIX=/usr/local

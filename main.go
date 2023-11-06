@@ -6,13 +6,14 @@ import (
   "strconv"
 )
 
-var version = "2.0.0"
+var sofname = "spliti"
+var version = "2.0.1"
 
 func help() {
   fmt.Println("使い方：")
-  fmt.Println("spliti -v               ：バージョンを表示")
-  fmt.Println("spliti -s [ポート番号]　：ポート番号でウエブサーバーを実行（デフォルト＝9930）")
-  fmt.Println("spliti -h               ：ヘルプを表示")
+  fmt.Println(sofname + " -v               ：バージョンを表示")
+  fmt.Println(sofname + " -s [ポート番号]　：ポート番号でウエブサーバーを実行（デフォルト＝9930）")
+  fmt.Println(sofname + " -h               ：ヘルプを表示")
 }
 
 func main() {
@@ -34,9 +35,12 @@ func main() {
     }
   } else if len(args) == 2 {
     if args[1] == "-v" {
-      fmt.Println("spliti-" + version)
+      fmt.Println(sofname + "-" + version)
     } else if args[1] == "-s" {
       serv(cnf, 9930)
+    } else {
+      help()
+      return
     }
   } else {
     help()

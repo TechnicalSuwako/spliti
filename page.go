@@ -128,6 +128,27 @@ func rmcbloat(body string, cnf Config) string {
 	return "<div class=\"newsArticle\">" + body + "</div>"
 }
 
+/* エラーだけが残るまで消す */
+func rmebloat(body string, cnf Config) string {
+	var re *regexp.Regexp
+
+	rep := []struct {
+		pat  string
+		repl string
+	}{
+		{`(?s)<!DOCTYPE html>.*?<p class="messageAlert">`, ""},
+		{`(?s)</p>.*?</html>`, ""},
+	}
+
+	for _, r := range rep {
+		re = regexp.MustCompile(r.pat)
+		body = re.ReplaceAllString(body, r.repl)
+	}
+
+	body = strings.TrimSpace("<div class=\"newsArticle\">\n" + strings.TrimSpace(body)) + "\n    </div>\n"
+	return body
+}
+
 /* 記事だけが残るまで消す */
 func rmbloat(body string, cnf Config) string {
 	var re *regexp.Regexp
@@ -210,10 +231,18 @@ func get(url string, cnf Config) map[string]string {
 
     res["title"] = gettitle(body)
     if isarticle(url) {
-      res["img"] = getimg(body, cnf)
-      res["content"] = rmbloat(body, cnf)
+      if !strings.Contains(body, "newsArticle") {
+        res["content"] = rmebloat(body, cnf)
+      } else {
+        res["img"] = getimg(body, cnf)
+        res["content"] = rmbloat(body, cnf)
+      }
     } else {
-      res["content"] = rmcbloat(body, cnf)
+      if !strings.Contains(body, "注目のニュース") {
+        res["content"] = rmebloat(body, cnf)
+      } else {
+        res["content"] = rmcbloat(body, cnf)
+      }
     }
     res["desc"] = getdesc(res["content"])
   }
