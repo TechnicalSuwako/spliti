@@ -80,7 +80,7 @@ func isarticle(url string) bool {
 /* 出版社かの確認 */
 func ispublish(url string) bool {
   chk := strings.Split(url, "=")
-  return len(chk) > 1 && chk[0] == "/list_news_media.pl?id"
+  return len(chk) > 1 && (chk[0] == "/list_news_media.pl?id" || chk[0] == "/list_news_media.pl?page")
 }
 
 /* カテゴリーだけが残るまで消す */
