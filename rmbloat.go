@@ -157,6 +157,7 @@ func rmbloat(body string, cnf Config) string {
     {`<!--`, ""},
     {`(?s)<img src="https://(.*?)"`, `<img src="` + cnf.imgproxy + `/$1"`},
     {`https://news-image.mixi.net`, cnf.imgproxy + `/news-image.mixi.net`},
+    {`(?s)<br /><p><a href="https://mixi.jp/bypass_stats.pl.*?</a></p>`, ""},
     {`https://news.mixi.jp/`, cnf.domain + `/`},
   }
 
