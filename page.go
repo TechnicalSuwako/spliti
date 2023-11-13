@@ -77,6 +77,12 @@ func isarticle(url string) bool {
   return len(chk) > 2 && chk[0] == "/view_news.pl?id"
 }
 
+/* 出版社かの確認 */
+func ispublish(url string) bool {
+  chk := strings.Split(url, "=")
+  return len(chk) > 1 && chk[0] == "/list_news_media.pl?id"
+}
+
 /* カテゴリーだけが残るまで消す */
 func rmcbloat(body string, cnf Config) string {
 	var re *regexp.Regexp
@@ -149,6 +155,35 @@ func rmebloat(body string, cnf Config) string {
 	return body
 }
 
+/* 出版社だけが残るまで消す */
+func rmpbloat(body string, cnf Config) string {
+  var re *regexp.Regexp
+
+  rep := []struct {
+    pat  string
+    repl string
+  }{
+    {`(?s)<!DOCTYPE html>.*?<div class="newsList">`, ""},
+    {`(?s)<!-- InstanceEndEditable -->.*?</html>`, ""},
+    {`(?s)<div class="pageList02 clearfix">.*?<p class="mediaIcon">`, `<div class="pageList02 clearfix"><ul><li rel="__display">1件～30件を表示</li><li rel="__next"><a href="http://127.0.0.1:9930/list_news_media.pl?page=2&id=175">次を表示</a></li></ul></div></div><p class="mediaIcon">`},
+    {`(?s)<div class="pageList02.*?</div>`, ""},
+		{`https://news-image.mixi.net`, cnf.imgproxy + `/news-image.mixi.net`},
+		{`https://img.mixi.net`, cnf.imgproxy + `/img.mixi.net`},
+		{`https://news.mixi.jp/`, cnf.domain + `/`},
+    {`・ `, ""},
+    {`\[`, ""},
+    {`\]`, ""},
+  }
+
+  for _, r := range rep {
+    re = regexp.MustCompile(r.pat)
+    body = re.ReplaceAllString(body, r.repl)
+  }
+
+	body = strings.TrimSpace("<div class=\"newsArticle\">\n" + strings.TrimSpace(body)) + "\n    </div>\n"
+	return body
+}
+
 /* 記事だけが残るまで消す */
 func rmbloat(body string, cnf Config) string {
 	var re *regexp.Regexp
@@ -174,6 +209,7 @@ func rmbloat(body string, cnf Config) string {
 		{`<!--`, ""},
 		{`(?s)<img src="https://(.*?)"`, `<img src="` + cnf.imgproxy + `/$1"`},
 		{`https://news-image.mixi.net`, cnf.imgproxy + `/news-image.mixi.net`},
+		{`https://news.mixi.jp/`, cnf.domain + `/`},
 	}
 
 	for _, r := range rep {
@@ -237,6 +273,8 @@ func get(url string, cnf Config) map[string]string {
         res["img"] = getimg(body, cnf)
         res["content"] = rmbloat(body, cnf)
       }
+    } else if ispublish(url) {
+      res["content"] = rmpbloat(body, cnf)
     } else {
       if !strings.Contains(body, "注目のニュース") {
         res["content"] = rmebloat(body, cnf)
