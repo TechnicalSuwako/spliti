@@ -74,7 +74,24 @@ func getdesc(str string) string {
 /* 記事かの確認 */
 func isarticle(url string) bool {
   chk := strings.Split(url, "=")
-  return len(chk) > 2 && chk[0] == "/view_news.pl?id"
+  return len(chk) > 2 && 
+         (chk[0] == "/view_news.pl?id" || chk[0] == "/view_news.pl?from" || chk[0] == "/view_news.pl?media_id" || chk[0] == "/view_news.pl?stkt")
+}
+
+/* 部分圏かの確認 */
+func issubcat(url string) bool {
+  chk := strings.Split(url, "=")
+  return len(chk) > 1 && 
+         (chk[0] == "/list_news_category.pl?id" || chk[0] == "/list_news_category.pl?page" || chk[0] == "/list_news_category.pl?sort" || chk[0] == "/list_news_category.pl?type" || chk[0] == "/list_news_category.pl?sub_category_id") &&
+         strings.Contains(url, "type=bn")
+}
+
+/* 部分かの確認 */
+func iscategory(url string) bool {
+  chk := strings.Split(url, "=")
+  return len(chk) > 1 &&
+         (chk[0] == "/list_news_category.pl?id" || chk[0] == "/list_news_category.pl?sub_category_id" || chk[0] == "/list_news_category?from") &&
+         !strings.Contains(url, "type=bn")
 }
 
 /* 出版社かの確認 */
@@ -155,6 +172,34 @@ func rmebloat(body string, cnf Config) string {
 	return body
 }
 
+/* 部分圏だけが残るまで消す */
+func rmsbloat(body string, cnf Config) string {
+  var re *regexp.Regexp
+
+  rep := []struct {
+    pat  string
+    repl string
+  }{
+    {`(?s)<!DOCTYPE html>.*?<!-- InstanceBeginEditable name="bodyMain" -->`, ""},
+    {`(?s)<div class="adsenseBannerArea">.*?</html>`, ""},
+    //{`(?s)<div class="pageList02.*?</div>`, ""},
+		{`https://news-image.mixi.net`, cnf.imgproxy + `/news-image.mixi.net`},
+		{`https://img.mixi.net`, cnf.imgproxy + `/img.mixi.net`},
+		{`https://news.mixi.jp/`, cnf.domain + `/`},
+    {`・ `, ""},
+    {`\[`, ""},
+    {`\]`, ""},
+  }
+
+  for _, r := range rep {
+    re = regexp.MustCompile(r.pat)
+    body = re.ReplaceAllString(body, r.repl)
+  }
+
+	body = strings.TrimSpace("<div class=\"newsArticle\">\n" + strings.TrimSpace(body)) + "\n    </div>\n"
+	return body
+}
+
 /* 出版社だけが残るまで消す */
 func rmpbloat(body string, cnf Config) string {
   var re *regexp.Regexp
@@ -163,9 +208,8 @@ func rmpbloat(body string, cnf Config) string {
     pat  string
     repl string
   }{
-    {`(?s)<!DOCTYPE html>.*?<div class="newsList">`, ""},
+    {`(?s)<!DOCTYPE html>.*?<!-- InstanceBeginEditable name="bodyMain" -->`, ""},
     {`(?s)<!-- InstanceEndEditable -->.*?</html>`, ""},
-    {`(?s)<div class="pageList02 clearfix">.*?<p class="mediaIcon">`, `<div class="pageList02 clearfix"><ul><li rel="__display">1件～30件を表示</li><li rel="__next"><a href="http://127.0.0.1:9930/list_news_media.pl?page=2&id=175">次を表示</a></li></ul></div></div><p class="mediaIcon">`},
     {`(?s)<div class="pageList02.*?</div>`, ""},
 		{`https://news-image.mixi.net`, cnf.imgproxy + `/news-image.mixi.net`},
 		{`https://img.mixi.net`, cnf.imgproxy + `/img.mixi.net`},
@@ -275,6 +319,12 @@ func get(url string, cnf Config) map[string]string {
       }
     } else if ispublish(url) {
       res["content"] = rmpbloat(body, cnf)
+    } else if issubcat(url) {
+      if !strings.Contains(body, "subCategoryNavi") {
+        res["content"] = rmebloat(body, cnf)
+      } else {
+        res["content"] = rmsbloat(body, cnf)
+      }
     } else {
       if !strings.Contains(body, "注目のニュース") {
         res["content"] = rmebloat(body, cnf)
