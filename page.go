@@ -77,13 +77,15 @@ func get(url string, cnf Config) map[string]string {
       return res
     }
 
+    id, _ := getid(url)
+
     res["title"] = gettitle(body)
     if isarticle(url) {
       if !strings.Contains(body, "newsArticle") {
         res["content"] = rmebloat(body, cnf)
       } else {
         res["img"] = getimg(body, cnf)
-        res["content"] = rmbloat(body, cnf)
+        res["content"] = rmbloat(id, body, cnf)
       }
     } else if ispublish(url) {
       res["content"] = rmpbloat(body, cnf)
@@ -92,6 +94,12 @@ func get(url string, cnf Config) map[string]string {
         res["content"] = rmebloat(body, cnf)
       } else {
         res["content"] = rmsbloat(body, cnf)
+      }
+    } else if istubayaki(url) {
+      if !strings.Contains(body, "quoteList") {
+        res["content"] = rmebloat(body, cnf)
+      } else {
+        res["content"] = rmqbloat(body, cnf)
       }
     } else {
       if !strings.Contains(body, "注目のニュース") {

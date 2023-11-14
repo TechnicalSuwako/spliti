@@ -53,7 +53,7 @@ func rmcbloat(body string, cnf Config) string {
   }
 
   body = strings.TrimSpace("<div class=\"subCategoryNavi\" class=\"LEGACY_UI2016_subCategoryNavi\">\n" + strings.TrimSpace(body)) + "\n    </div>\n"
-  return "<div class=\"newsArticle\">" + body + "</div>"
+  return "<div class=\"newsArticle\">\n<a class=\"totop\" href=\"/\">トップへ</a>\n" + body + "</div>"
 }
 
 /* エラーだけが残るまで消す */
@@ -73,7 +73,36 @@ func rmebloat(body string, cnf Config) string {
     body = re.ReplaceAllString(body, r.repl)
   }
 
-  body = strings.TrimSpace("<div class=\"newsArticle\">\n" + strings.TrimSpace(body)) + "\n    </div>\n"
+  body = strings.TrimSpace("<div class=\"newsArticle\">\n<a class=\"totop\" href=\"/\">トップへ</a>\n" + strings.TrimSpace(body)) + "\n    </div>\n"
+  return body
+}
+
+/* つばやきだけが残るまで消す */
+func rmqbloat(body string, cnf Config) string {
+  var re *regexp.Regexp
+
+  rep := []struct {
+    pat  string
+    repl string
+  }{
+    {`(?s)<!DOCTYPE html>.*?<div id="bodyMainArea" class="FRAME2016_bodyMainArea" >`, ""},
+    {`(?s)<div class="adsenseBannerArea">.*?</html>`, ""},
+    {`(?s)<div class="shareButtonArea">.*?<div class="relationNewsDescription">`, `<div class="relationNewsDescription">`},
+    {`https://news-image.mixi.net`, cnf.imgproxy + `/news-image.mixi.net`},
+    {`https://img.mixi.net`, cnf.imgproxy + `/img.mixi.net`},
+    {`https://news.mixi.jp/`, cnf.domain + `/`},
+    {`(?s)<div class="sortSwitch01">.*?</div>`, ""},
+    // {`・ `, ""},
+    // {`\[`, ""},
+    // {`\]`, ""},
+  }
+
+  for _, r := range rep {
+    re = regexp.MustCompile(r.pat)
+    body = re.ReplaceAllString(body, r.repl)
+  }
+
+  body = strings.TrimSpace("<div class=\"newsArticle\">\n<a class=\"totop\" href=\"/\">トップへ</a>\n" + strings.TrimSpace(body)) + "\n    </div>\n"
   return body
 }
 
@@ -100,7 +129,7 @@ func rmsbloat(body string, cnf Config) string {
     body = re.ReplaceAllString(body, r.repl)
   }
 
-  body = strings.TrimSpace("<div class=\"newsArticle\">\n" + strings.TrimSpace(body)) + "\n    </div>\n"
+  body = strings.TrimSpace("<div class=\"newsArticle\">\n<a class=\"totop\" href=\"/\">トップへ</a>\n" + strings.TrimSpace(body)) + "\n    </div>\n"
   return body
 }
 
@@ -128,12 +157,12 @@ func rmpbloat(body string, cnf Config) string {
     body = re.ReplaceAllString(body, r.repl)
   }
 
-  body = strings.TrimSpace("<div class=\"newsArticle\">\n" + strings.TrimSpace(body)) + "\n    </div>\n"
+  body = strings.TrimSpace("<div class=\"newsArticle\">\n<a class=\"totop\" href=\"/\">トップへ</a>\n" + strings.TrimSpace(body)) + "\n    </div>\n"
   return body
 }
 
 /* 記事だけが残るまで消す */
-func rmbloat(body string, cnf Config) string {
+func rmbloat(id string, body string, cnf Config) string {
   var re *regexp.Regexp
 
   rep := []struct {
@@ -157,7 +186,6 @@ func rmbloat(body string, cnf Config) string {
     {`<!--`, ""},
     {`(?s)<img src="https://(.*?)"`, `<img src="` + cnf.imgproxy + `/$1"`},
     {`https://news-image.mixi.net`, cnf.imgproxy + `/news-image.mixi.net`},
-    {`(?s)<br /><p><a href="https://mixi.jp/bypass_stats.pl.*?</a></p>`, ""},
     {`https://news.mixi.jp/`, cnf.domain + `/`},
   }
 
@@ -166,6 +194,10 @@ func rmbloat(body string, cnf Config) string {
     body = re.ReplaceAllString(body, r.repl)
   }
 
-  body = strings.TrimSpace("<div class=\"newsArticle\">\n" + strings.TrimSpace(body)) + "\n    </div>\n"
+  body = strings.TrimSpace("<div class=\"newsArticle\">\n<a class=\"totop\" href=\"/\">トップへ</a>\n" + strings.TrimSpace(body))
+  if id != "" {
+    body += "\n<p class=\"footer\"><a class=\"tubuyaki-btn\" href=\"/list_quote.pl?news_id=" + id + "&type=voice&sort=feedback_count\">つぶやきを見る</a></p>\n"
+  }
+  body += "\n    </div>\n"
   return body
 }
