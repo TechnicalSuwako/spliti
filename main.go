@@ -7,7 +7,7 @@ import (
 )
 
 var sofname = "spliti"
-var version = "2.0.1"
+var version = "2.1.0"
 
 func help() {
   fmt.Println("使い方：")
