@@ -2,7 +2,7 @@ package main
 
 import (
   "fmt"
-  "io/ioutil"
+  "io"
   "net/http"
   "regexp"
   "strings"
@@ -63,7 +63,7 @@ func get(url string, cnf Config) map[string]string {
   defer resp.Body.Close()
 
   if resp.StatusCode == http.StatusOK {
-    bytebody, err := ioutil.ReadAll(resp.Body)
+    bytebody, err := io.ReadAll(resp.Body)
     if err != nil {
       res["err"] = "内容はバイトコードとして読み込みに失敗。"
       fmt.Println(res["err"])
