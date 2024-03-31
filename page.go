@@ -90,7 +90,7 @@ func get(url string, cnf Config) map[string]string {
     } else if ispublish(url) {
       res["content"] = rmpbloat(body, cnf)
     } else if issubcat(url) {
-      if !strings.Contains(body, "subCategoryNavi") {
+      if strings.Contains(body, `<p class="messageAlert">存在しないカテゴリです</p>`) {
         res["content"] = rmebloat(body, cnf)
       } else {
         res["content"] = rmsbloat(body, cnf)

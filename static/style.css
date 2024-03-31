@@ -112,7 +112,10 @@ p.reactions {
   background: #3c213c;
 }
 
-.LEGACY_UI2016_subCategoryNavi > p > a, .pageList01 > div > ul > li, .pageList01 > ul > li, .pageNavigation02 > p.first, .pageNavigation02 > p.last, ul.sortTab > li {
+.LEGACY_UI2016_subCategoryNavi > p > a, .pageList01 > div > ul > li,
+.pageList01 > ul > li, .pageNavigation02 > p.first,
+.pageNavigation02 > p.last, ul.sortTab > li,
+.pageList02 > ul > li {
   background-color: #4d4d4d;
   padding: 4px;
   border: 1px solid #c625ef;
@@ -120,23 +123,42 @@ p.reactions {
   text-decoration: none;
 }
 
-.pageNavigation02 > p, .pageList01 > ul > li {
+.pageList01 > div > ul > li:not([class]):hover,
+.pageList01 > ul > li:hover,
+ul.sortTab > li:hover,
+.pageList02 > ul > li[rel="__prev"]:hover,
+.pageList02 > ul > li[rel="__next"]:hover,
+li.NEWS_pickupNewsItem:hover,
+p.NEWS_pickupItems__moreLink:hover,
+li.newCategoryList > a:hover,
+.photoNewsArea > a:hover,
+.NEWS_photoNewsItems__contentsArea:hover,
+a.tubuyaki-btn:hover,
+p.first:hover, p.last:hover,
+tr.odd:hover, tr.even:hover, .totop:hover {
+  background-color: #ae6bdb;
+}
+
+.pageNavigation02 > p, .pageList01 > ul > li, .pageList02 > ul > li {
   padding: 8px !important;
 }
 
-.pageNavigation02 > p.none, .pageList01 > ul > li.on, ul.sortTab > li.current, ul.sortTab > li.current > a {
+.pageNavigation02 > p.none, .pageList01 > ul > li.on, ul.sortTab > li.current,
+ul.sortTab > li.current > a {
   background-color: #232629;
   color: #4d4d4d;
   border-color: #4d4d4d;
 }
 
-.pageList01 > div > ul, .pageList01 > ul, .pageNavigation02 > p.first, .pageNavigation02 > p.last, ul.sortTab {
+.pageList01 > div > ul, .pageList01 > ul, .pageNavigation02 > p.first,
+.pageNavigation02 > p.last, ul.sortTab, .pageList02 > ul > li {
   padding-left: unset;
 }
 
 .pageList01 > div > ul,
 .pageList01 > div > ul > li,
 .pageList01 > ul > li,
+.pageList02 > ul > li,
 .entryList01, .entryList01 > li,
 .NEWS_pickupNewsList,
 .pageNavigation02 > p.first,
@@ -148,8 +170,18 @@ h2.newsTitle {
   display: inline;
 }
 
+.pageList02 {
+  text-align: center;
+  padding-top: 8px;
+}
+
 .relationNewsDescription {
   margin-top: 18px;
+}
+
+.relationNewsDescription > p.date {
+  border-left: 3px solid #f976de;
+  padding: 0 0 0 8px;
 }
 
 ul.voiceList01 {
