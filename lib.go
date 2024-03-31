@@ -1,7 +1,7 @@
 package main
 
 import (
-  "io/ioutil"
+  "io"
   "strings"
   "bytes"
 
@@ -35,7 +35,7 @@ func strip_tags(data string) string {
 func EUCJPToUTF8(input []byte) (string, error) {
   transformer := japanese.EUCJP.NewDecoder()
   reader := transform.NewReader(bytes.NewReader(input), transformer)
-  result, err := ioutil.ReadAll(reader)
+  result, err := io.ReadAll(reader)
   if err != nil {
     return "エンコーディングに失敗", err
   }
