@@ -1,10 +1,10 @@
-NAME := $(shell cat main.go | grep "var sofname" | awk '{print $$4}' | sed "s/\"//g")
-VERSION := $(shell cat main.go | grep "var version" | awk '{print $$4}' | sed "s/\"//g")
+NAME!=cat main.go | grep "var sofname" | awk '{print $$4}' | sed "s/\"//g"
+VERSION!=cat main.go | grep "var version" | awk '{print $$4}' | sed "s/\"//g"
 # Linux、Haiku、Illumos = /usr、FreeBSDとOpenBSD = /usr/local、NetBSD = /usr/pkg
 PREFIX=/usr/local
 MANPREFIX=${PREFIX}/share/man
-# FreeBSD = /usr/local/etc、それ以外 = /etc
-CNFPREFIX=/etc
+# FreeBSD = /usr/local/etc、NetBSD = /usr/pkg/etc、それ以外 = /etc
+CNFPREFIX?=/etc
 CC=CGO_ENABLED=0 go build
 # リリース。なし＝デバッグ。
 RELEASE=-ldflags="-s -w" -buildvcs=false
@@ -48,7 +48,7 @@ dist: clean
 	rm -rf ${NAME}-${VERSION}
 
 config:
-	make -p ${DESTDIR}${CNFPREFIX}/spliti
+	mkdir -p ${DESTDIR}${CNFPREFIX}/spliti
 	cp config.json ${DESTDIR}${CNFPREFIX}/spliti
 
 install: all

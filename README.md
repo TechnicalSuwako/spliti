@@ -13,12 +13,27 @@ git clone https://gitler.moe/suwako/spliti.git && cd spliti
 find . -type f -name "config.json" -exec sed -i 's/mixi.076.moe/$domain/g'
 ```
 
-### Linux
+### OpenBSD（オススメ）
 
 ```sh
 make
-doas make install PREFIX=/usr
+doas make install
 doas make config
+cd /etc
+wget https://076.moe/repo/webserver/relayd/spliti.conf
+mv spliti.conf relayd.conf
+find . -type f -name "/etc/relayd.conf" -exec sed -i 's/DOMAIN/$domain/g'
+rcctl restart relayd
+```
+
+### Linux
+
+**注意：BSD Makeをインストールして下さい。GNU Makeは未対応です。**
+
+```sh
+bmake
+doas bmake install PREFIX=/usr
+doas bmake config
 cp /etc/nginx/sites-enabled
 wget https://076.moe/repo/webserver/nginx/spliti.conf
 find . -type f -name "/etc/nginx/sites-enabled/spliti.conf" -exec sed -i 's/DOMAIN/$domain/g'
@@ -37,17 +52,16 @@ find . -type f -name "/usr/local/etc/nginx/sites-enabled/spliti.conf" -exec sed 
 service nginx restart
 ```
 
-### OpenBSD
+### NetBSD
 
 ```sh
 make
 doas make install
-doas make config
-cd /etc
-wget https://076.moe/repo/webserver/relayd/spliti.conf
-mv spliti.conf relayd.conf
-find . -type f -name "/etc/relayd.conf" -exec sed -i 's/DOMAIN/$domain/g'
-rcctl restart relayd
+doas make config CNFPREFIX=/usr/pkg/etc
+cp srv/nginx.conf /usr/pkg/etc/nginx/sites-enabled/spliti.conf
+wget https://076.moe/repo/webserver/nginx/spliti.conf
+find . -type f -name "/usr/pkg/etc/nginx/sites-enabled/spliti.conf" -exec sed -i 's/DOMAIN/$domain/g'
+service nginx restart
 ```
 
 ## インスタンス一覧

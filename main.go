@@ -7,10 +7,10 @@ import (
 )
 
 var sofname = "spliti"
-var version = "2.1.0"
+var version = "2.2.0"
 
 func help() {
-  fmt.Println("０７６ spliti - mixi向けプライバシーUI")
+  fmt.Println("０７６ " + sofname + "-" + version + " - mixi向けプライバシーUI")
   fmt.Println("https://mixi.076.moe/ | https://gitler.moe/suwako/spliti")
   fmt.Println("")
   fmt.Println("使い方：")
