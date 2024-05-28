@@ -7,7 +7,7 @@ import (
 )
 
 var sofname = "spliti"
-var version = "2.2.0"
+var version = "2.3.0"
 
 func help() {
   fmt.Println("０７６ " + sofname + "-" + version + " - mixi向けプライバシーUI")
